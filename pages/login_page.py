@@ -30,8 +30,8 @@ class LoginPage:
             # storage_permission =self.permission_handler.check_permission(ft.PermissionType.STORAGE)
             # print(microphone_permission, storage_permission)
             # Check permissions for storage and microphone
-            storage_permission = self.permission_handler.check_permission(ft.PermissionType.STORAGE)
-            microphone_permission = self.permission_handler.check_permission(ft.PermissionType.MICROPHONE)
+            storage_permission = self.permission_handler.check_permission(ft.PermissionType.STORAGE, wait_timeout=3)
+            microphone_permission = self.permission_handler.check_permission(ft.PermissionType.MICROPHONE, wait_timeout=3)
 
             # Update the UI based on permission status
             self.storage_permission_text.current.value = "Granted" if storage_permission == ft.PermissionStatus.GRANTED else "Denied"
@@ -158,7 +158,7 @@ class LoginPage:
                     )
                 )
         # Call permission checking after build
-        self.check_permissions_after_build()
+        # self.check_permissions_after_build()
 
         return self.return_container
     def join_chat_click(self, e):
