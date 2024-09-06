@@ -19,31 +19,31 @@ class LoginPage:
         self.page.bgcolor = "#e6f7ff"
         self.some_value = kwargs.get("some_value", "Default Value")
         self.ip_address = kwargs.get("ip_address", "No IP Address Provided")
-        self.permission_handler = ft.PermissionHandler()
-        self.page.add(self.permission_handler)
+        # self.permission_handler = ft.PermissionHandler()
+        # self.page.add(self.permission_handler)
         self.error_message = ft.Text("", color=ft.colors.RED)  # Placeholder for error messages
-    def check_permissions_after_build(self):
+    # def check_permissions_after_build(self):
         
-        print('[check_permissions_after_build]')
-        try:
-            # microphone_permission = self.permission_handler.check_permission(ft.PermissionType.MICROPHONE)
-            # storage_permission =self.permission_handler.check_permission(ft.PermissionType.STORAGE)
-            # print(microphone_permission, storage_permission)
-            # Check permissions for storage and microphone
-            storage_permission = self.permission_handler.check_permission(ft.PermissionType.STORAGE, wait_timeout=3)
-            microphone_permission = self.permission_handler.check_permission(ft.PermissionType.MICROPHONE, wait_timeout=3)
+    #     print('[check_permissions_after_build]')
+    #     try:
+    #         # microphone_permission = self.permission_handler.check_permission(ft.PermissionType.MICROPHONE)
+    #         # storage_permission =self.permission_handler.check_permission(ft.PermissionType.STORAGE)
+    #         # print(microphone_permission, storage_permission)
+    #         # Check permissions for storage and microphone
+    #         storage_permission = self.permission_handler.check_permission(ft.PermissionType.STORAGE, wait_timeout=3)
+    #         microphone_permission = self.permission_handler.check_permission(ft.PermissionType.MICROPHONE, wait_timeout=3)
 
-            # Update the UI based on permission status
-            self.storage_permission_text.current.value = "Granted" if storage_permission == ft.PermissionStatus.GRANTED else "Denied"
-            self.microphone_permission_text.current.value = "Granted" if microphone_permission == ft.PermissionStatus.GRANTED else "Denied"
+    #         # Update the UI based on permission status
+    #         self.storage_permission_text.current.value = "Granted" if storage_permission == ft.PermissionStatus.GRANTED else "Denied"
+    #         self.microphone_permission_text.current.value = "Granted" if microphone_permission == ft.PermissionStatus.GRANTED else "Denied"
             
-            # Enable or disable UI components based on permissions
-            self.return_container.content.disabled = not (storage_permission == ft.PermissionStatus.GRANTED and microphone_permission == ft.PermissionStatus.GRANTED)
+    #         # Enable or disable UI components based on permissions
+    #         self.return_container.content.disabled = not (storage_permission == ft.PermissionStatus.GRANTED and microphone_permission == ft.PermissionStatus.GRANTED)
             
-            # Ensure the changes are applied to the page
-            self.page.update()
-        except Exception as e:
-            print(e)
+    #         # Ensure the changes are applied to the page
+    #         self.page.update()
+    #     except Exception as e:
+    #         print(e)
         
     def will_unmount(self):
         print('[will_unmount]')
