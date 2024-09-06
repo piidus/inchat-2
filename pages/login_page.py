@@ -19,9 +19,16 @@ class LoginPage:
         self.page.bgcolor = "#e6f7ff"
         self.some_value = kwargs.get("some_value", "Default Value")
         self.ip_address = kwargs.get("ip_address", "No IP Address Provided")
-        # self.name_field = ft.TextField(label="Enter your name", width=300, bgcolor='white')
+        self.permission_handler = ft.PermissionHandler()
         self.error_message = ft.Text("", color=ft.colors.RED)  # Placeholder for error messages
-
+    def did_mount(self):
+        print('[did_mount]')
+        
+        self.page.update()
+        
+    def will_unmount(self):
+        print('[will_unmount]')
+        # print(self.permission_handler.check_permission(ft.PermissionType.STORAGE,)) # ft.PermissionType.MICROPHONE]))
     def size_setter(self, height, width):
         new_height = self.page.window.height * height /100
         new_width = self.page.window.width * width /100
@@ -84,10 +91,10 @@ class LoginPage:
         )
     
     def switch_click(self, e):
+        # print(self.permission_handler.check_permissions([ft.PermissionType.STORAGE, ft.PermissionType.MICROPHONE]))
         if e.control.permission_type == ft.PermissionType.STORAGE:
             if e.control.value:
                 self.storage_permission_text.current.value = "Granted"
-                
             else:
                 self.storage_permission_text.current.value = "Denied"
             print("Storage permission granted")
@@ -140,6 +147,7 @@ class LoginPage:
         try:
             # Navigate to ChatPage
             self.page.go("/chat_page")
+            # self.will_unmount()
             print("Navigated to ChatPage")
         except Exception as e:
             self.page.add(ft.Text(f"Error in navigation: {e}"))
