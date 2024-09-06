@@ -19,7 +19,7 @@ class LoginPage:
         self.page.bgcolor = "#e6f7ff"
         self.some_value = kwargs.get("some_value", "Default Value")
         self.ip_address = kwargs.get("ip_address", "No IP Address Provided")
-        self.name_field = ft.TextField(label="Enter your name", width=300, bgcolor='white')
+        # self.name_field = ft.TextField(label="Enter your name", width=300, bgcolor='white')
         self.error_message = ft.Text("", color=ft.colors.RED)  # Placeholder for error messages
 
     def size_setter(self, height, width):
@@ -37,16 +37,34 @@ class LoginPage:
             padding=ft.padding.all(10),
             content=Column(
                 height=main_colom_height,
-               controls=[
+                controls=[
                    self.permission_container(),
                    self.user_name_text_field(),
-               ]
+                    ]
                 )
 
         )
     def permission_container(self):
-        switch = Switch(scale=0.7, active_color=ft.colors.DEEP_PURPLE_300, 
-                        inactive_track_color=ft.colors.AMBER_ACCENT_400, on_change=self.switch_click)
+        # Create refs for the text fields
+        self.storage_permission_text = ft.Ref[ft.Text]()
+        self.microphone_permission_text = ft.Ref[ft.Text]()
+
+        # Create switches for microphone and storage permissions
+        storage_switch = ft.Switch(
+            scale=0.7, 
+            active_color=ft.colors.DEEP_PURPLE_300, 
+            inactive_track_color=ft.colors.AMBER_ACCENT_400, 
+            on_change=self.switch_click
+        )
+        storage_switch.permission_type = ft.PermissionType.STORAGE
+
+        microphone_switch = ft.Switch(
+            scale=0.7, 
+            active_color=ft.colors.DEEP_PURPLE_300, 
+            inactive_track_color=ft.colors.AMBER_ACCENT_400, 
+            on_change=self.switch_click
+        )
+        microphone_switch.permission_type = ft.PermissionType.MICROPHONE
         switch_height, switch_width = self.size_setter(height=50, width=70)
         return Container(
                 border=ft.border.all(2, ft.colors.GREEN_ACCENT_700),
@@ -57,33 +75,57 @@ class LoginPage:
                     height=switch_height,
                     alignment=ft.MainAxisAlignment.CENTER,  # Align content vertically in the center
                     horizontal_alignment=ft.CrossAxisAlignment.START,  # Align content horizontally in the center
-                    controls=[Row(controls=[switch, Text(value="Storage"), Text("Granted")], ),
-                            Row(controls=[switch, Text(value="Microphone"), Text("Granted")],)]
-                    )
+                    controls=[Row(controls=[storage_switch, Text(value="Storage"), 
+                                            Text(ref=self.storage_permission_text, value="Denied")], ),
+                            Row(controls=[microphone_switch, Text(value="Microphone"), 
+                                            Text(ref=self.microphone_permission_text, value="Denied")], ), 
+                            ]
+                            )
         )
     
     def switch_click(self, e):
+        if e.control.permission_type == ft.PermissionType.STORAGE:
+            if e.control.value:
+                self.storage_permission_text.current.value = "Granted"
+                
+            else:
+                self.storage_permission_text.current.value = "Denied"
+            print("Storage permission granted")
+        elif e.control.permission_type == ft.PermissionType.MICROPHONE:
+            if e.control.value:
+                self.microphone_permission_text.current.value = "Granted"
+            else:
+                self.microphone_permission_text.current.value = "Denied"
+            print("Microphone permission granted")
         print(e)
+         # Check if both permissions are granted
+        if self.storage_permission_text.current.value == "Granted" and self.microphone_permission_text.current.value == "Granted":
+            self.return_container.content.disabled = False  # Enable the input field
+        else:
+            self.return_container.content.disabled = True  # Keep the input field disabled
+
+        e.page.update()
     
     def user_name_text_field(self):
         self.text_box = ft.TextField(label="Enter your name", width=300, bgcolor='white')
         button = ft.ElevatedButton(text="Join Chat", on_click=self.join_chat_click)
         height, width = self.size_setter(30, 100)
-        return Container(
-            
-            border=ft.border.all(2, ft.colors.GREEN_ACCENT_700),
-            border_radius=ft.border_radius.all(10),
-            height=height,
-            bgcolor="white",
-            padding=10,
-            content=Column(
-                disabled=True,
-            
-                alignment=ft.MainAxisAlignment.CENTER,  # Align content vertically in the center
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,  # Align content horizontally in the center
-                controls=[self.text_box, button, self.error_message],
-            )
-        )
+        self.return_container = Container(
+                    border=ft.border.all(2, ft.colors.GREEN_ACCENT_700),
+                    border_radius=ft.border_radius.all(10),
+                    height=height,
+                    bgcolor="white",
+                    padding=10,
+                    content=Column(
+                        disabled=True,
+                    
+                        alignment=ft.MainAxisAlignment.CENTER,  # Align content vertically in the center
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,  # Align content horizontally in the center
+                        controls=[self.text_box, button, self.error_message],
+                    )
+                )
+
+        return self.return_container
     def join_chat_click(self, e):
         # print(e)
         user_name = self.text_box.value
