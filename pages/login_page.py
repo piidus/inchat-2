@@ -115,6 +115,7 @@ class LoginPage:
             if e.control.value:
                 self.storage_permission_text.current.value = "Granted"
                 d = self.permission_handler.request_permission(ft.PermissionType.STORAGE)
+                self.page.update()
                 print("Storage permission granted")
                 
             else:
@@ -123,6 +124,9 @@ class LoginPage:
         elif e.control.permission_type == ft.PermissionType.MICROPHONE:
             if e.control.value:
                 self.microphone_permission_text.current.value = "Granted"
+                d = self.permission_handler.request_permission(ft.PermissionType.MICROPHONE)
+                self.page.update()
+                print("Microphone permission granted")
             else:
                 self.microphone_permission_text.current.value = "Denied"
             print("Microphone permission granted")
